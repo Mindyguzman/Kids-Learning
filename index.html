@@ -171,6 +171,67 @@
             color: var(--text-light);
         }
 
+        .worksheet-selector {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .worksheet-selector h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .sublevel-section {
+            margin-bottom: 25px;
+        }
+
+        .sublevel-title {
+            font-size: 1.2em;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-weight: 700;
+            padding: 15px;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            border-radius: 10px;
+        }
+
+        .worksheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .worksheet-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            border: 3px solid #DEE2E6;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Baloo 2', cursive;
+            color: var(--text-dark);
+        }
+
+        .worksheet-btn:hover {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--purple) 100%);
+            color: white;
+            border-color: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .worksheet-btn.completed {
+            background: linear-gradient(135deg, var(--success) 0%, var(--purple) 100%);
+            color: white;
+            border-color: var(--success);
+        }
+
         .worksheet-area {
             background: white;
             border-radius: 20px;
@@ -224,6 +285,74 @@
             text-align: center;
             font-size: 2em;
             margin-top: 10px;
+        }
+
+        .drawing-tools {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .drawing-tools h4 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 1.2em;
+        }
+
+        .tool-btn {
+            padding: 10px 20px;
+            border: 2px solid #DEE2E6;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .tool-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 40px;
+            border: 2px solid #DEE2E6;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            position: relative;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        #scratchCanvas {
+            border: 2px dashed #DEE2E6;
+            border-radius: 10px;
+            cursor: crosshair;
+            touch-action: none;
+            background: #FFFEF9;
+            width: 100%;
+            max-width: 100%;
         }
 
         .question-card {
@@ -476,6 +605,19 @@
             .subject-selector {
                 grid-template-columns: 1fr;
             }
+
+            .worksheet-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+
+            .drawing-tools {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #scratchCanvas {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -513,6 +655,11 @@
             </div>
         </div>
 
+        <div id="worksheetSelector" class="worksheet-selector hidden">
+            <h3>Select a Worksheet</h3>
+            <div id="worksheetList"></div>
+        </div>
+
         <div id="worksheetArea" class="worksheet-area hidden">
             <div class="worksheet-header">
                 <div class="worksheet-title" id="worksheetTitle"></div>
@@ -525,115 +672,439 @@
                 </div>
             </div>
 
+            <div class="drawing-tools">
+                <h4>✏️ Scratch Paper:</h4>
+                <button class="tool-btn active" onclick="setDrawingTool('pen')" id="penBtn">Pen</button>
+                <button class="tool-btn" onclick="setDrawingTool('eraser')" id="eraserBtn">Eraser</button>
+                <input type="color" class="color-picker" id="colorPicker" value="#2C3E50" onchange="setDrawingColor(this.value)">
+                <button class="tool-btn" onclick="clearCanvas()">Clear All</button>
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <span>Line Width:</span>
+                    <input type="range" min="1" max="10" value="3" id="lineWidth" onchange="setLineWidth(this.value)" style="width: 100px;">
+                </label>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="scratchCanvas" width="800" height="400"></canvas>
+            </div>
+
             <div id="questionsContainer"></div>
 
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="checkAnswers()">Check My Answers ✓</button>
-                <button class="btn btn-secondary" onclick="newWorksheet()">New Worksheet 🔄</button>
+                <button class="btn btn-secondary" onclick="backToWorksheetList()">Choose Another Worksheet 📋</button>
                 <button class="btn btn-secondary" onclick="backToMenu()">Back to Menu 🏠</button>
             </div>
         </div>
     </div>
 
     <script>
+        // Global state
         let currentGrade = null;
         let currentSubject = null;
+        let currentSublevel = null;
+        let currentWorksheetNum = null;
         let currentQuestions = [];
         let userAnswers = {};
         let checkedOnce = false;
+        let completedWorksheets = {};
 
-        const mathProblems = {
-            'C': [
-                // C 1-50: Mastering Tables (Multiplication Tables 2-9)
-                { type: 'input', question: '3 × 4 = ?', answer: '12', category: 'Tables' },
-                { type: 'input', question: '7 × 8 = ?', answer: '56', category: 'Tables' },
-                { type: 'input', question: '9 × 6 = ?', answer: '54', category: 'Tables' },
-                { type: 'input', question: '5 × 9 = ?', answer: '45', category: 'Tables' },
-                { type: 'input', question: '8 × 7 = ?', answer: '56', category: 'Tables' },
-                { type: 'input', question: '6 × 8 = ?', answer: '48', category: 'Tables' },
-                { type: 'input', question: '9 × 9 = ?', answer: '81', category: 'Tables' },
-                { type: 'input', question: '4 × 7 = ?', answer: '28', category: 'Tables' },
-                { type: 'input', question: '8 × 6 = ?', answer: '48', category: 'Tables' },
-                { type: 'input', question: '7 × 9 = ?', answer: '63', category: 'Tables' },
-                
-                // C 51-110: Multi-digit Multiplication (2-digit × 1-digit with carrying)
-                { type: 'input', question: '48 × 6 = ?', answer: '288', category: 'Multi-digit' },
-                { type: 'input', question: '37 × 4 = ?', answer: '148', category: 'Multi-digit' },
-                { type: 'input', question: '56 × 7 = ?', answer: '392', category: 'Multi-digit' },
-                { type: 'input', question: '89 × 5 = ?', answer: '445', category: 'Multi-digit' },
-                { type: 'input', question: '64 × 8 = ?', answer: '512', category: 'Multi-digit' },
-                { type: 'input', question: '73 × 9 = ?', answer: '657', category: 'Multi-digit' },
-                
-                // C 51-110: 3-digit × 1-digit
-                { type: 'input', question: '325 × 4 = ?', answer: '1300', category: 'Multi-digit' },
-                { type: 'input', question: '456 × 3 = ?', answer: '1368', category: 'Multi-digit' },
-                { type: 'input', question: '582 × 6 = ?', answer: '3492', category: 'Multi-digit' },
-                { type: 'input', question: '247 × 5 = ?', answer: '1235', category: 'Multi-digit' },
-                { type: 'input', question: '639 × 7 = ?', answer: '4473', category: 'Multi-digit' },
-                
-                // C 111-200: Introduction to Division (reverse of multiplication tables)
-                { type: 'input', question: '56 ÷ 8 = ?', answer: '7', category: 'Division' },
-                { type: 'input', question: '72 ÷ 9 = ?', answer: '8', category: 'Division' },
-                { type: 'input', question: '48 ÷ 6 = ?', answer: '8', category: 'Division' },
-                { type: 'input', question: '63 ÷ 7 = ?', answer: '9', category: 'Division' },
-                { type: 'input', question: '54 ÷ 6 = ?', answer: '9', category: 'Division' },
-                { type: 'input', question: '81 ÷ 9 = ?', answer: '9', category: 'Division' },
-                
-                // C 111-200: Division with Remainders
-                { type: 'input', question: '49 ÷ 6 = ? (answer as: quotient r remainder, e.g., 8 r 1)', answer: '8 r 1', category: 'Division with Remainders' },
-                { type: 'input', question: '50 ÷ 7 = ? (answer as: quotient r remainder)', answer: '7 r 1', category: 'Division with Remainders' },
-                { type: 'input', question: '38 ÷ 5 = ? (answer as: quotient r remainder)', answer: '7 r 3', category: 'Division with Remainders' },
-                { type: 'input', question: '59 ÷ 8 = ? (answer as: quotient r remainder)', answer: '7 r 3', category: 'Division with Remainders' },
-                { type: 'input', question: '67 ÷ 9 = ? (answer as: quotient r remainder)', answer: '7 r 4', category: 'Division with Remainders' },
-            ],
-            'D': [
-                // D 1-80: Advanced Long Division (2-digit divisors)
-                { type: 'input', question: '432 ÷ 12 = ?', answer: '36', category: 'Long Division' },
-                { type: 'input', question: '675 ÷ 15 = ?', answer: '45', category: 'Long Division' },
-                { type: 'input', question: '896 ÷ 16 = ?', answer: '56', category: 'Long Division' },
-                { type: 'input', question: '588 ÷ 14 = ?', answer: '42', category: 'Long Division' },
-                { type: 'input', question: '924 ÷ 21 = ?', answer: '44', category: 'Long Division' },
-                { type: 'input', question: '756 ÷ 18 = ?', answer: '42', category: 'Long Division' },
-                { type: 'input', question: '851 ÷ 23 = ? (answer as: quotient r remainder)', answer: '37 r 0', category: 'Long Division' },
-                { type: 'input', question: '945 ÷ 27 = ?', answer: '35', category: 'Long Division' },
-                
-                // D 81-150: Fractions - Reducing/Simplifying
-                { type: 'multiple', question: 'Simplify: 4/8', options: ['1/2', '2/4', '4/8', '1/4'], answer: '1/2', category: 'Simplifying Fractions' },
-                { type: 'multiple', question: 'Simplify: 6/9', options: ['2/3', '3/4', '1/3', '6/9'], answer: '2/3', category: 'Simplifying Fractions' },
-                { type: 'multiple', question: 'Simplify: 10/15', options: ['2/3', '5/7', '1/2', '10/15'], answer: '2/3', category: 'Simplifying Fractions' },
-                { type: 'multiple', question: 'Simplify: 8/12', options: ['2/3', '4/6', '1/2', '8/12'], answer: '2/3', category: 'Simplifying Fractions' },
-                
-                // D 81-150: Improper Fractions to Mixed Numbers
-                { type: 'input', question: 'Convert to mixed number: 7/3 = ? (answer as: 2 1/3)', answer: '2 1/3', category: 'Mixed Numbers' },
-                { type: 'input', question: 'Convert to mixed number: 11/4 = ? (answer as: 2 3/4)', answer: '2 3/4', category: 'Mixed Numbers' },
-                { type: 'input', question: 'Convert to mixed number: 17/5 = ? (answer as: 3 2/5)', answer: '3 2/5', category: 'Mixed Numbers' },
-                { type: 'input', question: 'Convert to mixed number: 13/6 = ? (answer as: 2 1/6)', answer: '2 1/6', category: 'Mixed Numbers' },
-                
-                // D 81-150: Addition and Subtraction of Fractions (like denominators)
-                { type: 'input', question: '2/5 + 1/5 = ? (answer as fraction, e.g., 3/5)', answer: '3/5', category: 'Fraction Addition' },
-                { type: 'input', question: '4/7 + 2/7 = ? (answer as fraction)', answer: '6/7', category: 'Fraction Addition' },
-                { type: 'input', question: '5/8 - 2/8 = ? (answer as fraction)', answer: '3/8', category: 'Fraction Subtraction' },
-                { type: 'input', question: '7/9 - 4/9 = ? (answer as fraction)', answer: '3/9', category: 'Fraction Subtraction' },
-                { type: 'input', question: '3/10 + 4/10 = ? (answer as fraction)', answer: '7/10', category: 'Fraction Addition' },
-                
-                // D 151-200: Multi-digit Multiplication (2-digit × 2-digit)
-                { type: 'input', question: '24 × 35 = ?', answer: '840', category: 'Multi-digit Multiplication' },
-                { type: 'input', question: '48 × 27 = ?', answer: '1296', category: 'Multi-digit Multiplication' },
-                { type: 'input', question: '56 × 43 = ?', answer: '2408', category: 'Multi-digit Multiplication' },
-                
-                // D 151-200: 3-digit × 2-digit
-                { type: 'input', question: '724 × 35 = ?', answer: '25340', category: 'Multi-digit Multiplication' },
-                { type: 'input', question: '456 × 28 = ?', answer: '12768', category: 'Multi-digit Multiplication' },
-                { type: 'input', question: '583 × 46 = ?', answer: '26818', category: 'Multi-digit Multiplication' },
-                
-                // D 151-200: Decimals - Basic notation and place value
-                { type: 'input', question: '3.5 + 2.8 = ?', answer: '6.3', category: 'Decimals' },
-                { type: 'input', question: '7.6 - 3.2 = ?', answer: '4.4', category: 'Decimals' },
-                { type: 'input', question: '5.25 + 1.75 = ?', answer: '7', category: 'Decimals' },
-                { type: 'input', question: '8.9 - 4.3 = ?', answer: '4.6', category: 'Decimals' },
-                { type: 'multiple', question: 'Which is larger: 0.7 or 0.65?', options: ['0.7', '0.65', 'Equal', 'Cannot tell'], answer: '0.7', category: 'Decimals' },
-            ]
+        // Drawing canvas variables
+        let canvas, ctx;
+        let isDrawing = false;
+        let currentTool = 'pen';
+        let currentColor = '#2C3E50';
+        let lineWidth = 3;
+
+        // Initialize canvas
+        function initCanvas() {
+            canvas = document.getElementById('scratchCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size based on container
+            const container = canvas.parentElement;
+            const containerWidth = container.clientWidth - 40;
+            canvas.width = Math.min(800, containerWidth);
+            canvas.height = 400;
+            
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = currentTool === 'eraser' ? '#FFFEF9' : currentColor;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+
+        function setDrawingTool(tool) {
+            currentTool = tool;
+            document.getElementById('penBtn').classList.toggle('active', tool === 'pen');
+            document.getElementById('eraserBtn').classList.toggle('active', tool === 'eraser');
+        }
+
+        function setDrawingColor(color) {
+            currentColor = color;
+        }
+
+        function setLineWidth(width) {
+            lineWidth = width;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Comprehensive worksheet data - 10 worksheets per sublevel
+        const mathWorksheets = {
+            'C': {
+                'Tables': generateTablesWorksheets(),
+                'Multi-digit': generateMultiDigitWorksheets(),
+                'Division': generateDivisionWorksheets()
+            },
+            'D': {
+                'Long Division': generateLongDivisionWorksheets(),
+                'Fractions': generateFractionsWorksheets(),
+                'Multiplication & Decimals': generateMultiplicationDecimalsWorksheets()
+            }
         };
+
+        function generateTablesWorksheets() {
+            const worksheets = [];
+            
+            // Worksheet 1: 2-4 tables
+            worksheets.push([
+                { q: '2 × 3 = ?', a: '6' },
+                { q: '3 × 4 = ?', a: '12' },
+                { q: '4 × 5 = ?', a: '20' },
+                { q: '2 × 7 = ?', a: '14' },
+                { q: '3 × 6 = ?', a: '18' },
+                { q: '4 × 3 = ?', a: '12' },
+                { q: '2 × 9 = ?', a: '18' },
+                { q: '3 × 8 = ?', a: '24' },
+                { q: '4 × 7 = ?', a: '28' },
+                { q: '2 × 6 = ?', a: '12' }
+            ]);
+            
+            // Worksheet 2: 5-6 tables
+            worksheets.push([
+                { q: '5 × 4 = ?', a: '20' },
+                { q: '6 × 3 = ?', a: '18' },
+                { q: '5 × 7 = ?', a: '35' },
+                { q: '6 × 5 = ?', a: '30' },
+                { q: '5 × 9 = ?', a: '45' },
+                { q: '6 × 7 = ?', a: '42' },
+                { q: '5 × 6 = ?', a: '30' },
+                { q: '6 × 8 = ?', a: '48' },
+                { q: '5 × 8 = ?', a: '40' },
+                { q: '6 × 9 = ?', a: '54' }
+            ]);
+            
+            // Worksheet 3: 7-8 tables
+            worksheets.push([
+                { q: '7 × 4 = ?', a: '28' },
+                { q: '8 × 3 = ?', a: '24' },
+                { q: '7 × 6 = ?', a: '42' },
+                { q: '8 × 5 = ?', a: '40' },
+                { q: '7 × 8 = ?', a: '56' },
+                { q: '8 × 7 = ?', a: '56' },
+                { q: '7 × 9 = ?', a: '63' },
+                { q: '8 × 6 = ?', a: '48' },
+                { q: '7 × 7 = ?', a: '49' },
+                { q: '8 × 9 = ?', a: '72' }
+            ]);
+            
+            // Worksheet 4: 9 tables
+            worksheets.push([
+                { q: '9 × 2 = ?', a: '18' },
+                { q: '9 × 3 = ?', a: '27' },
+                { q: '9 × 4 = ?', a: '36' },
+                { q: '9 × 5 = ?', a: '45' },
+                { q: '9 × 6 = ?', a: '54' },
+                { q: '9 × 7 = ?', a: '63' },
+                { q: '9 × 8 = ?', a: '72' },
+                { q: '9 × 9 = ?', a: '81' },
+                { q: '9 × 1 = ?', a: '9' },
+                { q: '9 × 10 = ?', a: '90' }
+            ]);
+            
+            // Worksheets 5-10: Mixed practice with increasing speed requirement
+            for (let i = 5; i <= 10; i++) {
+                const mixed = [];
+                for (let j = 0; j < 10; j++) {
+                    const num1 = Math.floor(Math.random() * 8) + 2;
+                    const num2 = Math.floor(Math.random() * 8) + 2;
+                    mixed.push({ q: `${num1} × ${num2} = ?`, a: String(num1 * num2) });
+                }
+                worksheets.push(mixed);
+            }
+            
+            return worksheets;
+        }
+
+        function generateMultiDigitWorksheets() {
+            const worksheets = [];
+            
+            // Worksheets 1-3: 2-digit × 1-digit (no carrying)
+            for (let w = 0; w < 3; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const num1 = (Math.floor(Math.random() * 4) + 1) * 10 + Math.floor(Math.random() * 3);
+                    const num2 = Math.floor(Math.random() * 3) + 2;
+                    ws.push({ q: `${num1} × ${num2} = ?`, a: String(num1 * num2) });
+                }
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 4-6: 2-digit × 1-digit (with carrying)
+            for (let w = 0; w < 3; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const num1 = Math.floor(Math.random() * 90) + 10;
+                    const num2 = Math.floor(Math.random() * 7) + 3;
+                    ws.push({ q: `${num1} × ${num2} = ?`, a: String(num1 * num2) });
+                }
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 7-10: 3-digit × 1-digit
+            for (let w = 0; w < 4; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const num1 = Math.floor(Math.random() * 900) + 100;
+                    const num2 = Math.floor(Math.random() * 8) + 2;
+                    ws.push({ q: `${num1} × ${num2} = ?`, a: String(num1 * num2) });
+                }
+                worksheets.push(ws);
+            }
+            
+            return worksheets;
+        }
+
+        function generateDivisionWorksheets() {
+            const worksheets = [];
+            
+            // Worksheets 1-4: Division facts (reverse of multiplication)
+            for (let w = 0; w < 4; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const divisor = Math.floor(Math.random() * 7) + 3;
+                    const quotient = Math.floor(Math.random() * 9) + 2;
+                    const dividend = divisor * quotient;
+                    ws.push({ q: `${dividend} ÷ ${divisor} = ?`, a: String(quotient) });
+                }
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 5-10: Division with remainders
+            for (let w = 0; w < 6; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const divisor = Math.floor(Math.random() * 6) + 4;
+                    const quotient = Math.floor(Math.random() * 12) + 3;
+                    const remainder = Math.floor(Math.random() * (divisor - 1)) + 1;
+                    const dividend = divisor * quotient + remainder;
+                    ws.push({ 
+                        q: `${dividend} ÷ ${divisor} = ? (answer as: quotient r remainder)`, 
+                        a: `${quotient} r ${remainder}` 
+                    });
+                }
+                worksheets.push(ws);
+            }
+            
+            return worksheets;
+        }
+
+        function generateLongDivisionWorksheets() {
+            const worksheets = [];
+            
+            // Worksheets 1-5: 2-digit divisors (no remainder)
+            for (let w = 0; w < 5; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const divisor = Math.floor(Math.random() * 15) + 11;
+                    const quotient = Math.floor(Math.random() * 50) + 10;
+                    const dividend = divisor * quotient;
+                    ws.push({ q: `${dividend} ÷ ${divisor} = ?`, a: String(quotient) });
+                }
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 6-10: 2-digit divisors (with remainders)
+            for (let w = 0; w < 5; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const divisor = Math.floor(Math.random() * 20) + 12;
+                    const quotient = Math.floor(Math.random() * 40) + 15;
+                    const remainder = Math.floor(Math.random() * (divisor - 1)) + 1;
+                    const dividend = divisor * quotient + remainder;
+                    ws.push({ 
+                        q: `${dividend} ÷ ${divisor} = ? (answer as: quotient r remainder)`, 
+                        a: `${quotient} r ${remainder}` 
+                    });
+                }
+                worksheets.push(ws);
+            }
+            
+            return worksheets;
+        }
+
+        function generateFractionsWorksheets() {
+            const worksheets = [];
+            const fractions = [
+                { orig: '2/4', simp: '1/2' },
+                { orig: '3/6', simp: '1/2' },
+                { orig: '4/8', simp: '1/2' },
+                { orig: '6/9', simp: '2/3' },
+                { orig: '8/12', simp: '2/3' },
+                { orig: '10/15', simp: '2/3' },
+                { orig: '6/8', simp: '3/4' },
+                { orig: '9/12', simp: '3/4' },
+                { orig: '4/6', simp: '2/3' },
+                { orig: '10/12', simp: '5/6' }
+            ];
+            
+            // Worksheets 1-3: Simplifying fractions
+            for (let w = 0; w < 3; w++) {
+                const ws = fractions.map(f => ({ 
+                    q: `Simplify: ${f.orig} (answer as fraction, e.g., 1/2)`, 
+                    a: f.simp 
+                }));
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 4-5: Improper to mixed
+            const improper = [
+                { imp: '7/3', mix: '2 1/3' },
+                { imp: '11/4', mix: '2 3/4' },
+                { imp: '17/5', mix: '3 2/5' },
+                { imp: '13/6', mix: '2 1/6' },
+                { imp: '19/7', mix: '2 5/7' },
+                { imp: '23/8', mix: '2 7/8' },
+                { imp: '15/4', mix: '3 3/4' },
+                { imp: '22/5', mix: '4 2/5' },
+                { imp: '27/6', mix: '4 3/6' },
+                { imp: '31/9', mix: '3 4/9' }
+            ];
+            for (let w = 0; w < 2; w++) {
+                const ws = improper.map(f => ({ 
+                    q: `Convert to mixed number: ${f.imp} (answer as: 2 1/3)`, 
+                    a: f.mix 
+                }));
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 6-10: Addition/subtraction of fractions
+            for (let w = 0; w < 5; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const denom = [5, 6, 7, 8, 9, 10][Math.floor(Math.random() * 6)];
+                    const num1 = Math.floor(Math.random() * (denom - 2)) + 1;
+                    const num2 = Math.floor(Math.random() * (denom - num1 - 1)) + 1;
+                    const op = Math.random() < 0.5 ? '+' : '-';
+                    const result = op === '+' ? num1 + num2 : num1 - num2;
+                    if (result > 0) {
+                        ws.push({ 
+                            q: `${num1}/${denom} ${op} ${num2}/${denom} = ? (answer as fraction)`, 
+                            a: `${result}/${denom}` 
+                        });
+                    } else {
+                        i--;
+                    }
+                }
+                worksheets.push(ws);
+            }
+            
+            return worksheets;
+        }
+
+        function generateMultiplicationDecimalsWorksheets() {
+            const worksheets = [];
+            
+            // Worksheets 1-4: 2-digit × 2-digit
+            for (let w = 0; w < 4; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const num1 = Math.floor(Math.random() * 50) + 20;
+                    const num2 = Math.floor(Math.random() * 50) + 20;
+                    ws.push({ q: `${num1} × ${num2} = ?`, a: String(num1 * num2) });
+                }
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 5-7: 3-digit × 2-digit
+            for (let w = 0; w < 3; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    const num1 = Math.floor(Math.random() * 500) + 200;
+                    const num2 = Math.floor(Math.random() * 50) + 20;
+                    ws.push({ q: `${num1} × ${num2} = ?`, a: String(num1 * num2) });
+                }
+                worksheets.push(ws);
+            }
+            
+            // Worksheets 8-10: Decimals
+            for (let w = 0; w < 3; w++) {
+                const ws = [];
+                for (let i = 0; i < 10; i++) {
+                    if (Math.random() < 0.5) {
+                        const num1 = (Math.floor(Math.random() * 90) + 10) / 10;
+                        const num2 = (Math.floor(Math.random() * 90) + 10) / 10;
+                        const result = (num1 + num2).toFixed(1);
+                        ws.push({ q: `${num1} + ${num2} = ?`, a: result });
+                    } else {
+                        const num1 = (Math.floor(Math.random() * 90) + 20) / 10;
+                        const num2 = (Math.floor(Math.random() * 50) + 10) / 10;
+                        const result = (num1 - num2).toFixed(1);
+                        ws.push({ q: `${num1} - ${num2} = ?`, a: result });
+                    }
+                }
+                worksheets.push(ws);
+            }
+            
+            return worksheets;
+        }
 
         const readingContent = {
             'C': [
@@ -679,7 +1150,7 @@ In his later years, Franklin helped write the Declaration of Independence and th
 
 Photosynthesis occurs mainly in the leaves of plants. Leaves contain millions of tiny structures called chloroplasts, which give plants their green color. Inside chloroplasts is a pigment called chlorophyll that captures energy from sunlight.
 
-The process begins when plants absorb water through their roots and carbon dioxide from the air through tiny pores called stomata. Using the energy captured by chlorophyll, plants combine water and carbon dioxide to produce glucose (a type of sugar) and oxygen. The chemical equation for photosynthesis is: 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂.
+The process begins when plants absorb water through their roots and carbon dioxide from the air through tiny pores called stomata. Using the energy captured by chlorophyll, plants combine water and carbon dioxide to produce glucose (a type of sugar) and oxygen.
 
 The glucose produced provides energy for the plant to grow and carry out life processes. The oxygen is released into the air as a waste product—which is fortunate for us because we need oxygen to breathe! In fact, plants produce most of the oxygen in Earth's atmosphere.
 
@@ -707,7 +1178,7 @@ The first winter was brutal. Nearly half of the Pilgrims died from disease and h
                         { type: 'input', question: 'How many passengers were on the Mayflower? (number only)', answer: '102' },
                         { type: 'multiple', question: 'How long did the voyage take?', options: ['40 days', '50 days', '66 days', '80 days'], answer: '66 days' },
                         { type: 'multiple', question: 'Where did the Pilgrims originally intend to land?', options: ['Cape Cod', 'Plymouth', 'Near the Hudson River', 'Boston'], answer: 'Near the Hudson River' },
-                        { type: 'input', question: 'What was the name of the document signed before leaving the ship? (three words)', answer: 'Mayflower Compact' },
+                        { type: 'input', question: 'What was the name of the document signed before leaving the ship? (two words, capitalized)', answer: 'Mayflower Compact' },
                         { type: 'multiple', question: 'About how many Pilgrims survived the first winter?', options: ['All of them', 'About half', 'Only a few', 'None of them'], answer: 'About half' },
                     ]
                 }
@@ -727,11 +1198,62 @@ The first winter was brutal. Nearly half of the Pilgrims died from disease and h
             event.target.closest('.subject-card').classList.add('active');
             
             setTimeout(() => {
-                generateWorksheet();
+                if (subject === 'math') {
+                    showWorksheetSelector();
+                } else {
+                    generateReadingWorksheet();
+                }
             }, 300);
         }
 
-        function generateWorksheet() {
+        function showWorksheetSelector() {
+            document.getElementById('subjectSelector').classList.add('hidden');
+            document.getElementById('worksheetSelector').classList.remove('hidden');
+            
+            const worksheetList = document.getElementById('worksheetList');
+            worksheetList.innerHTML = '';
+            
+            const sublevels = Object.keys(mathWorksheets[currentGrade]);
+            
+            sublevels.forEach(sublevel => {
+                const section = document.createElement('div');
+                section.className = 'sublevel-section';
+                
+                const title = document.createElement('div');
+                title.className = 'sublevel-title';
+                title.textContent = sublevel;
+                section.appendChild(title);
+                
+                const grid = document.createElement('div');
+                grid.className = 'worksheet-grid';
+                
+                for (let i = 1; i <= 10; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'worksheet-btn';
+                    btn.textContent = `#${i}`;
+                    const wsKey = `${currentGrade}-${sublevel}-${i}`;
+                    if (completedWorksheets[wsKey]) {
+                        btn.classList.add('completed');
+                        btn.textContent += ' ✓';
+                    }
+                    btn.onclick = () => selectWorksheet(sublevel, i);
+                    grid.appendChild(btn);
+                }
+                
+                section.appendChild(grid);
+                worksheetList.appendChild(section);
+            });
+            
+            document.getElementById('worksheetSelector').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectWorksheet(sublevel, worksheetNum) {
+            currentSublevel = sublevel;
+            currentWorksheetNum = worksheetNum;
+            generateMathWorksheet();
+        }
+
+        function generateMathWorksheet() {
             checkedOnce = false;
             userAnswers = {};
             
@@ -739,28 +1261,51 @@ The first winter was brutal. Nearly half of the Pilgrims died from disease and h
             const questionsContainer = document.getElementById('questionsContainer');
             const worksheetTitle = document.getElementById('worksheetTitle');
             
+            document.getElementById('worksheetSelector').classList.add('hidden');
             worksheetArea.classList.remove('hidden');
+            
             questionsContainer.innerHTML = '';
+            clearCanvas();
             
-            if (currentSubject === 'math') {
-                worksheetTitle.textContent = `Level ${currentGrade} Math Practice`;
-                currentQuestions = getRandomQuestions(mathProblems[currentGrade], 10);
-                renderMathQuestions();
-            } else {
-                worksheetTitle.textContent = `Level ${currentGrade} Reading Comprehension`;
-                const readingSet = readingContent[currentGrade][Math.floor(Math.random() * readingContent[currentGrade].length)];
-                currentQuestions = readingSet.questions;
-                renderReadingQuestions(readingSet);
-            }
+            worksheetTitle.textContent = `Level ${currentGrade} - ${currentSublevel} - Worksheet ${currentWorksheetNum}`;
             
+            const worksheet = mathWorksheets[currentGrade][currentSublevel][currentWorksheetNum - 1];
+            currentQuestions = worksheet.map(item => ({
+                type: 'input',
+                question: item.q,
+                answer: item.a,
+                category: currentSublevel
+            }));
+            
+            renderMathQuestions();
             updateProgress();
             
             worksheetArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            initCanvas();
         }
 
-        function getRandomQuestions(questions, count) {
-            const shuffled = [...questions].sort(() => Math.random() - 0.5);
-            return shuffled.slice(0, Math.min(count, questions.length));
+        function generateReadingWorksheet() {
+            checkedOnce = false;
+            userAnswers = {};
+            
+            const worksheetArea = document.getElementById('worksheetArea');
+            const questionsContainer = document.getElementById('questionsContainer');
+            const worksheetTitle = document.getElementById('worksheetTitle');
+            
+            document.getElementById('subjectSelector').classList.add('hidden');
+            worksheetArea.classList.remove('hidden');
+            
+            questionsContainer.innerHTML = '';
+            clearCanvas();
+            
+            worksheetTitle.textContent = `Level ${currentGrade} Reading Comprehension`;
+            const readingSet = readingContent[currentGrade][Math.floor(Math.random() * readingContent[currentGrade].length)];
+            currentQuestions = readingSet.questions;
+            renderReadingQuestions(readingSet);
+            
+            updateProgress();
+            worksheetArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            initCanvas();
         }
 
         function renderMathQuestions() {
@@ -772,18 +1317,9 @@ The first winter was brutal. Nearly half of the Pilgrims died from disease and h
                 questionCard.innerHTML = `
                     <div class="question-number">Question ${index + 1} ${q.category ? `<span style="opacity: 0.7; font-size: 0.85em;">• ${q.category}</span>` : ''}</div>
                     <div class="question-text">${q.question}</div>
-                    ${q.type === 'input' 
-                        ? `<input type="text" class="answer-input" id="answer-${index}" 
-                             placeholder="Type your answer here..."
-                             onchange="saveAnswer(${index}, this.value)">`
-                        : `<div class="options-container">
-                             ${q.options.map((opt, i) => 
-                                `<button class="option-btn" onclick="selectOption(${index}, '${opt}', this)">
-                                    ${opt}
-                                 </button>`
-                             ).join('')}
-                           </div>`
-                    }
+                    <input type="text" class="answer-input" id="answer-${index}" 
+                         placeholder="Type your answer here..."
+                         onchange="saveAnswer(${index}, this.value)">
                     <div id="feedback-${index}"></div>
                 `;
                 container.appendChild(questionCard);
@@ -871,8 +1407,12 @@ The first winter was brutal. Nearly half of the Pilgrims died from disease and h
                 }
             });
             
-            const percentage = (correctCount / currentQuestions.length) * 100;
             updateProgress(correctCount);
+            
+            if (correctCount === currentQuestions.length && currentSubject === 'math') {
+                const wsKey = `${currentGrade}-${currentSublevel}-${currentWorksheetNum}`;
+                completedWorksheets[wsKey] = true;
+            }
             
             if (correctCount === currentQuestions.length) {
                 setTimeout(() => {
@@ -885,7 +1425,7 @@ The first winter was brutal. Nearly half of the Pilgrims died from disease and h
 
         function checkAnswer(userAnswer, correctAnswer) {
             const normalizeAnswer = (ans) => {
-                return ans.toString().toLowerCase().replace(/[^a-z0-9./]/g, '');
+                return ans.toString().toLowerCase().replace(/[^a-z0-9./\s]/g, '').trim();
             };
             return normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
         }
@@ -961,16 +1501,31 @@ The first winter was brutal. Nearly half of the Pilgrims died from disease and h
             `;
         }
 
-        function newWorksheet() {
-            generateWorksheet();
+        function backToWorksheetList() {
+            document.getElementById('worksheetArea').classList.add('hidden');
+            if (currentSubject === 'math') {
+                showWorksheetSelector();
+            } else {
+                document.getElementById('subjectSelector').classList.remove('hidden');
+            }
+            document.getElementById('starsEarned').textContent = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function backToMenu() {
             document.getElementById('worksheetArea').classList.add('hidden');
+            document.getElementById('worksheetSelector').classList.add('hidden');
             document.getElementById('subjectSelector').classList.remove('hidden');
             document.getElementById('starsEarned').textContent = '';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            if (document.getElementById('scratchCanvas')) {
+                initCanvas();
+            }
+        });
     </script>
 </body>
 </html>
