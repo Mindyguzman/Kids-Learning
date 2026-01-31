@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn & Grow - Math & Reading Practice</title>
+    <title>Learn & Grow - Math & Reading Practice (Levels C & D)</title>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -483,17 +483,19 @@
     <div class="app-container">
         <div class="header">
             <h1>📚 Learn & Grow 🌟</h1>
-            <p>Practice makes perfect! Let's learn together.</p>
+            <p>Level C (5th Grade) & Level D (6th Grade) - Practice makes perfect!</p>
         </div>
 
         <div class="student-selector">
-            <h2>Select Your Grade</h2>
+            <h2>Select Your Level</h2>
             <div class="grade-buttons">
-                <button class="grade-btn" onclick="selectGrade(3)">
-                    🎒 3rd Grade
+                <button class="grade-btn" onclick="selectGrade('C')">
+                    🎯 Level C (5th Grade)<br>
+                    <small style="font-size: 0.8em; opacity: 0.9;">Multiplication & Division</small>
                 </button>
-                <button class="grade-btn" onclick="selectGrade(5)">
-                    📖 5th Grade
+                <button class="grade-btn" onclick="selectGrade('D')">
+                    🚀 Level D (6th Grade)<br>
+                    <small style="font-size: 0.8em; opacity: 0.9;">Long Division, Fractions & Decimals</small>
                 </button>
             </div>
         </div>
@@ -541,84 +543,100 @@
         let checkedOnce = false;
 
         const mathProblems = {
-            3: [
-                // Addition and Subtraction
-                { type: 'input', question: '145 + 278 = ?', answer: '423' },
-                { type: 'input', question: '562 - 189 = ?', answer: '373' },
-                { type: 'input', question: '89 + 456 = ?', answer: '545' },
-                { type: 'input', question: '723 - 398 = ?', answer: '325' },
-                // Multiplication
-                { type: 'input', question: '7 × 8 = ?', answer: '56' },
-                { type: 'input', question: '9 × 6 = ?', answer: '54' },
-                { type: 'input', question: '12 × 5 = ?', answer: '60' },
-                // Division
-                { type: 'input', question: '48 ÷ 6 = ?', answer: '8' },
-                { type: 'input', question: '63 ÷ 7 = ?', answer: '9' },
-                { type: 'input', question: '72 ÷ 8 = ?', answer: '9' },
-                // Word Problems
-                { type: 'input', question: 'Sarah has 24 apples. She gives 8 to her friend. How many apples does she have left?', answer: '16' },
-                { type: 'input', question: 'A box contains 6 pencils. How many pencils are in 7 boxes?', answer: '42' },
-                { type: 'multiple', question: 'What is the next number in the pattern? 5, 10, 15, 20, ___', options: ['23', '25', '30', '35'], answer: '25' },
-                { type: 'multiple', question: 'Which fraction is equal to one half?', options: ['2/4', '1/3', '3/5', '2/5'], answer: '2/4' },
-                { type: 'input', question: 'What is 5 × 9?', answer: '45' },
+            'C': [
+                // C 1-50: Mastering Tables (Multiplication Tables 2-9)
+                { type: 'input', question: '3 × 4 = ?', answer: '12', category: 'Tables' },
+                { type: 'input', question: '7 × 8 = ?', answer: '56', category: 'Tables' },
+                { type: 'input', question: '9 × 6 = ?', answer: '54', category: 'Tables' },
+                { type: 'input', question: '5 × 9 = ?', answer: '45', category: 'Tables' },
+                { type: 'input', question: '8 × 7 = ?', answer: '56', category: 'Tables' },
+                { type: 'input', question: '6 × 8 = ?', answer: '48', category: 'Tables' },
+                { type: 'input', question: '9 × 9 = ?', answer: '81', category: 'Tables' },
+                { type: 'input', question: '4 × 7 = ?', answer: '28', category: 'Tables' },
+                { type: 'input', question: '8 × 6 = ?', answer: '48', category: 'Tables' },
+                { type: 'input', question: '7 × 9 = ?', answer: '63', category: 'Tables' },
+                
+                // C 51-110: Multi-digit Multiplication (2-digit × 1-digit with carrying)
+                { type: 'input', question: '48 × 6 = ?', answer: '288', category: 'Multi-digit' },
+                { type: 'input', question: '37 × 4 = ?', answer: '148', category: 'Multi-digit' },
+                { type: 'input', question: '56 × 7 = ?', answer: '392', category: 'Multi-digit' },
+                { type: 'input', question: '89 × 5 = ?', answer: '445', category: 'Multi-digit' },
+                { type: 'input', question: '64 × 8 = ?', answer: '512', category: 'Multi-digit' },
+                { type: 'input', question: '73 × 9 = ?', answer: '657', category: 'Multi-digit' },
+                
+                // C 51-110: 3-digit × 1-digit
+                { type: 'input', question: '325 × 4 = ?', answer: '1300', category: 'Multi-digit' },
+                { type: 'input', question: '456 × 3 = ?', answer: '1368', category: 'Multi-digit' },
+                { type: 'input', question: '582 × 6 = ?', answer: '3492', category: 'Multi-digit' },
+                { type: 'input', question: '247 × 5 = ?', answer: '1235', category: 'Multi-digit' },
+                { type: 'input', question: '639 × 7 = ?', answer: '4473', category: 'Multi-digit' },
+                
+                // C 111-200: Introduction to Division (reverse of multiplication tables)
+                { type: 'input', question: '56 ÷ 8 = ?', answer: '7', category: 'Division' },
+                { type: 'input', question: '72 ÷ 9 = ?', answer: '8', category: 'Division' },
+                { type: 'input', question: '48 ÷ 6 = ?', answer: '8', category: 'Division' },
+                { type: 'input', question: '63 ÷ 7 = ?', answer: '9', category: 'Division' },
+                { type: 'input', question: '54 ÷ 6 = ?', answer: '9', category: 'Division' },
+                { type: 'input', question: '81 ÷ 9 = ?', answer: '9', category: 'Division' },
+                
+                // C 111-200: Division with Remainders
+                { type: 'input', question: '49 ÷ 6 = ? (answer as: quotient r remainder, e.g., 8 r 1)', answer: '8 r 1', category: 'Division with Remainders' },
+                { type: 'input', question: '50 ÷ 7 = ? (answer as: quotient r remainder)', answer: '7 r 1', category: 'Division with Remainders' },
+                { type: 'input', question: '38 ÷ 5 = ? (answer as: quotient r remainder)', answer: '7 r 3', category: 'Division with Remainders' },
+                { type: 'input', question: '59 ÷ 8 = ? (answer as: quotient r remainder)', answer: '7 r 3', category: 'Division with Remainders' },
+                { type: 'input', question: '67 ÷ 9 = ? (answer as: quotient r remainder)', answer: '7 r 4', category: 'Division with Remainders' },
             ],
-            5: [
-                // Multi-digit operations
-                { type: 'input', question: '3,456 + 2,789 = ?', answer: '6245' },
-                { type: 'input', question: '5,832 - 2,967 = ?', answer: '2865' },
-                { type: 'input', question: '345 × 6 = ?', answer: '2070' },
-                { type: 'input', question: '144 ÷ 12 = ?', answer: '12' },
-                // Decimals
-                { type: 'input', question: '3.5 + 2.8 = ?', answer: '6.3' },
-                { type: 'input', question: '8.9 - 3.4 = ?', answer: '5.5' },
-                // Fractions
-                { type: 'multiple', question: 'What is 1/4 + 1/4?', options: ['1/8', '1/2', '2/8', '2/4'], answer: '1/2' },
-                { type: 'multiple', question: 'What is 3/5 of 20?', options: ['10', '12', '15', '18'], answer: '12' },
-                // Word Problems
-                { type: 'input', question: 'A rectangle has a length of 12 cm and width of 8 cm. What is its area in square cm?', answer: '96' },
-                { type: 'input', question: 'If a book costs $15.75 and you pay with a $20 bill, how much change do you get?', answer: '4.25' },
-                { type: 'multiple', question: 'What is the perimeter of a square with sides of 7 inches?', options: ['14 inches', '21 inches', '28 inches', '49 inches'], answer: '28 inches' },
-                { type: 'input', question: 'What is 25% of 80?', answer: '20' },
-                { type: 'input', question: '15 × 12 = ?', answer: '180' },
-                { type: 'input', question: 'What is 0.6 × 10?', answer: '6' },
-                { type: 'multiple', question: 'Which is larger: 0.7 or 0.65?', options: ['0.7', '0.65', 'They are equal', 'Cannot determine'], answer: '0.7' },
+            'D': [
+                // D 1-80: Advanced Long Division (2-digit divisors)
+                { type: 'input', question: '432 ÷ 12 = ?', answer: '36', category: 'Long Division' },
+                { type: 'input', question: '675 ÷ 15 = ?', answer: '45', category: 'Long Division' },
+                { type: 'input', question: '896 ÷ 16 = ?', answer: '56', category: 'Long Division' },
+                { type: 'input', question: '588 ÷ 14 = ?', answer: '42', category: 'Long Division' },
+                { type: 'input', question: '924 ÷ 21 = ?', answer: '44', category: 'Long Division' },
+                { type: 'input', question: '756 ÷ 18 = ?', answer: '42', category: 'Long Division' },
+                { type: 'input', question: '851 ÷ 23 = ? (answer as: quotient r remainder)', answer: '37 r 0', category: 'Long Division' },
+                { type: 'input', question: '945 ÷ 27 = ?', answer: '35', category: 'Long Division' },
+                
+                // D 81-150: Fractions - Reducing/Simplifying
+                { type: 'multiple', question: 'Simplify: 4/8', options: ['1/2', '2/4', '4/8', '1/4'], answer: '1/2', category: 'Simplifying Fractions' },
+                { type: 'multiple', question: 'Simplify: 6/9', options: ['2/3', '3/4', '1/3', '6/9'], answer: '2/3', category: 'Simplifying Fractions' },
+                { type: 'multiple', question: 'Simplify: 10/15', options: ['2/3', '5/7', '1/2', '10/15'], answer: '2/3', category: 'Simplifying Fractions' },
+                { type: 'multiple', question: 'Simplify: 8/12', options: ['2/3', '4/6', '1/2', '8/12'], answer: '2/3', category: 'Simplifying Fractions' },
+                
+                // D 81-150: Improper Fractions to Mixed Numbers
+                { type: 'input', question: 'Convert to mixed number: 7/3 = ? (answer as: 2 1/3)', answer: '2 1/3', category: 'Mixed Numbers' },
+                { type: 'input', question: 'Convert to mixed number: 11/4 = ? (answer as: 2 3/4)', answer: '2 3/4', category: 'Mixed Numbers' },
+                { type: 'input', question: 'Convert to mixed number: 17/5 = ? (answer as: 3 2/5)', answer: '3 2/5', category: 'Mixed Numbers' },
+                { type: 'input', question: 'Convert to mixed number: 13/6 = ? (answer as: 2 1/6)', answer: '2 1/6', category: 'Mixed Numbers' },
+                
+                // D 81-150: Addition and Subtraction of Fractions (like denominators)
+                { type: 'input', question: '2/5 + 1/5 = ? (answer as fraction, e.g., 3/5)', answer: '3/5', category: 'Fraction Addition' },
+                { type: 'input', question: '4/7 + 2/7 = ? (answer as fraction)', answer: '6/7', category: 'Fraction Addition' },
+                { type: 'input', question: '5/8 - 2/8 = ? (answer as fraction)', answer: '3/8', category: 'Fraction Subtraction' },
+                { type: 'input', question: '7/9 - 4/9 = ? (answer as fraction)', answer: '3/9', category: 'Fraction Subtraction' },
+                { type: 'input', question: '3/10 + 4/10 = ? (answer as fraction)', answer: '7/10', category: 'Fraction Addition' },
+                
+                // D 151-200: Multi-digit Multiplication (2-digit × 2-digit)
+                { type: 'input', question: '24 × 35 = ?', answer: '840', category: 'Multi-digit Multiplication' },
+                { type: 'input', question: '48 × 27 = ?', answer: '1296', category: 'Multi-digit Multiplication' },
+                { type: 'input', question: '56 × 43 = ?', answer: '2408', category: 'Multi-digit Multiplication' },
+                
+                // D 151-200: 3-digit × 2-digit
+                { type: 'input', question: '724 × 35 = ?', answer: '25340', category: 'Multi-digit Multiplication' },
+                { type: 'input', question: '456 × 28 = ?', answer: '12768', category: 'Multi-digit Multiplication' },
+                { type: 'input', question: '583 × 46 = ?', answer: '26818', category: 'Multi-digit Multiplication' },
+                
+                // D 151-200: Decimals - Basic notation and place value
+                { type: 'input', question: '3.5 + 2.8 = ?', answer: '6.3', category: 'Decimals' },
+                { type: 'input', question: '7.6 - 3.2 = ?', answer: '4.4', category: 'Decimals' },
+                { type: 'input', question: '5.25 + 1.75 = ?', answer: '7', category: 'Decimals' },
+                { type: 'input', question: '8.9 - 4.3 = ?', answer: '4.6', category: 'Decimals' },
+                { type: 'multiple', question: 'Which is larger: 0.7 or 0.65?', options: ['0.7', '0.65', 'Equal', 'Cannot tell'], answer: '0.7', category: 'Decimals' },
             ]
         };
 
         const readingContent = {
-            3: [
-                {
-                    title: 'The Curious Raccoon',
-                    passage: `Rocky the raccoon lived near a small pond in the forest. Every night, he would wash his food in the water before eating it. One evening, Rocky found a shiny coin by the pond. He tried to wash it just like his food, but the coin slipped from his paws and fell into the water.
-
-Rocky looked into the pond, but he couldn't see the coin anymore. He felt sad. Just then, a wise old turtle swam up to him. "Don't worry," said the turtle. "I saw where your coin fell. It's resting on a lily pad." The turtle helped Rocky get his coin back.
-
-From that day on, Rocky was more careful with his treasures. He also made a new friend in the turtle. They would often meet by the pond and share stories about their day.`,
-                    questions: [
-                        { type: 'multiple', question: 'Where did Rocky the raccoon live?', options: ['In a cave', 'Near a pond', 'In a tree', 'In a burrow'], answer: 'Near a pond' },
-                        { type: 'multiple', question: 'What did Rocky find by the pond?', options: ['A shiny coin', 'A fish', 'A acorn', 'A shell'], answer: 'A shiny coin' },
-                        { type: 'multiple', question: 'Who helped Rocky find his coin?', options: ['A bird', 'A turtle', 'A fish', 'A frog'], answer: 'A turtle' },
-                        { type: 'multiple', question: 'What did Rocky do before eating his food?', options: ['Cooked it', 'Washed it', 'Shared it', 'Hid it'], answer: 'Washed it' },
-                        { type: 'input', question: 'What lesson did Rocky learn? (Use 1-2 words)', answer: 'be careful' },
-                    ]
-                },
-                {
-                    title: 'The Solar System',
-                    passage: `Our solar system is like a big neighborhood in space. At the center is the Sun, which is actually a star. The Sun gives us light and warmth.
-
-Eight planets orbit around the Sun. The four planets closest to the Sun are called the inner planets: Mercury, Venus, Earth, and Mars. These planets are made mostly of rock. Earth is the third planet from the Sun and the only one where we know life exists.
-
-The four planets farthest from the Sun are called the outer planets: Jupiter, Saturn, Uranus, and Neptune. These planets are much bigger and are made mostly of gas. Saturn is famous for its beautiful rings made of ice and rock.`,
-                    questions: [
-                        { type: 'multiple', question: 'What is at the center of our solar system?', options: ['Earth', 'The Moon', 'The Sun', 'Jupiter'], answer: 'The Sun' },
-                        { type: 'multiple', question: 'How many planets orbit the Sun?', options: ['Six', 'Seven', 'Eight', 'Nine'], answer: 'Eight' },
-                        { type: 'multiple', question: 'What are the inner planets made of?', options: ['Gas', 'Rock', 'Ice', 'Water'], answer: 'Rock' },
-                        { type: 'multiple', question: 'Which planet is famous for its rings?', options: ['Jupiter', 'Saturn', 'Uranus', 'Neptune'], answer: 'Saturn' },
-                        { type: 'multiple', question: 'What is Earth\'s position from the Sun?', options: ['First', 'Second', 'Third', 'Fourth'], answer: 'Third' },
-                    ]
-                }
-            ],
-            5: [
+            'C': [
                 {
                     title: 'The Water Cycle',
                     passage: `Water on Earth is constantly moving through a process called the water cycle. This cycle has been happening for billions of years and is essential for all life on our planet.
@@ -627,9 +645,7 @@ The water cycle begins with evaporation. When the Sun heats up water in rivers, 
 
 As the water vapor rises higher into the atmosphere, it cools down and condenses into tiny water droplets, forming clouds. This process is called condensation. When the droplets become heavy enough, they fall back to Earth as precipitation—rain, snow, sleet, or hail.
 
-When precipitation falls on land, some of it flows into streams and rivers, eventually reaching the ocean. This is called runoff. Some water also seeps into the ground, becoming groundwater that plants and trees can use. The cycle then begins again with evaporation.
-
-Understanding the water cycle helps us appreciate how water is recycled in nature and why it's important to protect our water resources.`,
+When precipitation falls on land, some of it flows into streams and rivers, eventually reaching the ocean. This is called runoff. Some water also seeps into the ground, becoming groundwater that plants and trees can use. The cycle then begins again with evaporation.`,
                     questions: [
                         { type: 'multiple', question: 'What causes water to evaporate?', options: ['Wind', 'The Sun', 'Clouds', 'Rain'], answer: 'The Sun' },
                         { type: 'multiple', question: 'What is the process of water vapor turning into clouds called?', options: ['Evaporation', 'Precipitation', 'Condensation', 'Transpiration'], answer: 'Condensation' },
@@ -639,22 +655,60 @@ Understanding the water cycle helps us appreciate how water is recycled in natur
                     ]
                 },
                 {
-                    title: 'The Ancient Egyptians',
-                    passage: `Ancient Egypt was one of the most powerful civilizations in history, lasting for over 3,000 years. The Egyptian civilization developed along the Nile River in northeastern Africa around 3100 BCE.
+                    title: 'Benjamin Franklin',
+                    passage: `Benjamin Franklin was one of the most remarkable people in American history. Born in 1706 in Boston, he became famous as an inventor, writer, scientist, and statesman.
 
-The Nile River was crucial to Egyptian life. Every year, the river would flood, depositing rich, fertile soil on the land. This allowed the Egyptians to grow crops like wheat and barley. The Nile also served as a major transportation route for trade and travel.
+As a young man, Franklin worked as a printer and started his own newspaper. He became known for his witty sayings like "Early to bed and early to rise makes a man healthy, wealthy, and wise." He published these sayings in a book called Poor Richard's Almanack.
 
-The ancient Egyptians are famous for building massive pyramids as tombs for their pharaohs, or kings. The largest pyramid, the Great Pyramid of Giza, was built around 2560 BCE and is one of the Seven Wonders of the Ancient World. It took thousands of workers about 20 years to build.
+Franklin was also a brilliant inventor. He invented the lightning rod, which protects buildings from lightning strikes. He also created bifocal glasses, which help people see both near and far. He never patented his inventions because he believed they should benefit everyone.
 
-Egyptians developed one of the earliest forms of writing called hieroglyphics, using pictures and symbols to represent words and sounds. They also made advances in mathematics, medicine, and engineering. Their mummification process helped preserve bodies for thousands of years.
-
-The legacy of ancient Egypt continues to fascinate people today, and archaeologists are still making new discoveries about this remarkable civilization.`,
+In his later years, Franklin helped write the Declaration of Independence and the United States Constitution. He also served as an ambassador to France, helping to secure French support during the American Revolution. Franklin died in 1790 at the age of 84, leaving behind a legacy of innovation and service.`,
                     questions: [
-                        { type: 'multiple', question: 'How long did ancient Egyptian civilization last?', options: ['500 years', '1,000 years', '2,000 years', 'Over 3,000 years'], answer: 'Over 3,000 years' },
-                        { type: 'multiple', question: 'Why was the Nile River important to Egyptians?', options: ['It provided water and fertile soil', 'It protected them from enemies', 'It was used for ceremonies', 'It contained gold'], answer: 'It provided water and fertile soil' },
-                        { type: 'input', question: 'What were Egyptian kings called? (one word)', answer: 'pharaohs' },
-                        { type: 'multiple', question: 'What was the Egyptian system of writing called?', options: ['Alphabet', 'Hieroglyphics', 'Cuneiform', 'Calligraphy'], answer: 'Hieroglyphics' },
-                        { type: 'multiple', question: 'About how long did it take to build the Great Pyramid?', options: ['5 years', '10 years', '20 years', '50 years'], answer: '20 years' },
+                        { type: 'multiple', question: 'What was Benjamin Franklin\'s first job?', options: ['Inventor', 'Printer', 'Politician', 'Teacher'], answer: 'Printer' },
+                        { type: 'multiple', question: 'What book did Franklin publish with witty sayings?', options: ['The Constitution', 'Poor Richard\'s Almanack', 'The Declaration', 'Boston Times'], answer: 'Poor Richard\'s Almanack' },
+                        { type: 'multiple', question: 'What protects buildings from lightning?', options: ['Bifocals', 'Lightning rod', 'Newspaper', 'Almanack'], answer: 'Lightning rod' },
+                        { type: 'multiple', question: 'Why didn\'t Franklin patent his inventions?', options: ['He forgot', 'He was too busy', 'He wanted everyone to benefit', 'They weren\'t important'], answer: 'He wanted everyone to benefit' },
+                        { type: 'input', question: 'What country did Franklin serve as ambassador to? (one word)', answer: 'France' },
+                    ]
+                }
+            ],
+            'D': [
+                {
+                    title: 'Photosynthesis: How Plants Make Food',
+                    passage: `Have you ever wondered how plants make their own food? Unlike animals, plants don't need to eat other organisms to survive. Instead, they create their own food through a remarkable process called photosynthesis.
+
+Photosynthesis occurs mainly in the leaves of plants. Leaves contain millions of tiny structures called chloroplasts, which give plants their green color. Inside chloroplasts is a pigment called chlorophyll that captures energy from sunlight.
+
+The process begins when plants absorb water through their roots and carbon dioxide from the air through tiny pores called stomata. Using the energy captured by chlorophyll, plants combine water and carbon dioxide to produce glucose (a type of sugar) and oxygen. The chemical equation for photosynthesis is: 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂.
+
+The glucose produced provides energy for the plant to grow and carry out life processes. The oxygen is released into the air as a waste product—which is fortunate for us because we need oxygen to breathe! In fact, plants produce most of the oxygen in Earth's atmosphere.
+
+Photosynthesis is essential for life on Earth. It forms the foundation of most food chains, as plants are eaten by herbivores, which are in turn eaten by carnivores. Without photosynthesis, life as we know it could not exist.`,
+                    questions: [
+                        { type: 'multiple', question: 'Where does photosynthesis mainly occur in plants?', options: ['Roots', 'Stems', 'Leaves', 'Flowers'], answer: 'Leaves' },
+                        { type: 'multiple', question: 'What gives plants their green color?', options: ['Glucose', 'Oxygen', 'Chlorophyll', 'Stomata'], answer: 'Chlorophyll' },
+                        { type: 'input', question: 'What are the tiny pores that absorb carbon dioxide called? (one word)', answer: 'stomata' },
+                        { type: 'multiple', question: 'What type of sugar do plants produce?', options: ['Fructose', 'Glucose', 'Sucrose', 'Lactose'], answer: 'Glucose' },
+                        { type: 'multiple', question: 'What "waste product" do plants release that we need?', options: ['Carbon dioxide', 'Water', 'Glucose', 'Oxygen'], answer: 'Oxygen' },
+                    ]
+                },
+                {
+                    title: 'The Journey of the Mayflower',
+                    passage: `In September 1620, a small ship called the Mayflower set sail from Plymouth, England, carrying 102 passengers. These passengers, known as Pilgrims, were seeking religious freedom and a new life in America. They faced a dangerous journey across the Atlantic Ocean that would change the course of history.
+
+The voyage was extremely difficult. The ship was only about 100 feet long—roughly the size of a modern volleyball court—and was packed with passengers, crew, supplies, and even farm animals. Storms battered the vessel, and one main beam cracked during the journey. The passengers were seasick and frightened, but they pressed on.
+
+After 66 days at sea, the Mayflower finally reached land in November 1620. However, they had been blown off course and arrived at Cape Cod in present-day Massachusetts instead of their intended destination near the Hudson River. The Pilgrims decided to settle there and established Plymouth Colony.
+
+Before leaving the ship, the male passengers signed an agreement called the Mayflower Compact. This document established a government based on majority rule and is considered one of the first examples of self-government in America. It stated that they would create "just and equal laws" for the good of the colony.
+
+The first winter was brutal. Nearly half of the Pilgrims died from disease and harsh conditions. However, with help from the Wampanoag people, particularly a man named Squanto, the survivors learned to farm in their new land. In autumn 1621, they celebrated their first successful harvest with a feast of thanksgiving—an event that became the foundation for the American holiday of Thanksgiving.`,
+                    questions: [
+                        { type: 'input', question: 'How many passengers were on the Mayflower? (number only)', answer: '102' },
+                        { type: 'multiple', question: 'How long did the voyage take?', options: ['40 days', '50 days', '66 days', '80 days'], answer: '66 days' },
+                        { type: 'multiple', question: 'Where did the Pilgrims originally intend to land?', options: ['Cape Cod', 'Plymouth', 'Near the Hudson River', 'Boston'], answer: 'Near the Hudson River' },
+                        { type: 'input', question: 'What was the name of the document signed before leaving the ship? (three words)', answer: 'Mayflower Compact' },
+                        { type: 'multiple', question: 'About how many Pilgrims survived the first winter?', options: ['All of them', 'About half', 'Only a few', 'None of them'], answer: 'About half' },
                     ]
                 }
             ]
@@ -663,7 +717,7 @@ The legacy of ancient Egypt continues to fascinate people today, and archaeologi
         function selectGrade(grade) {
             currentGrade = grade;
             document.querySelectorAll('.grade-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            event.target.closest('.grade-btn').classList.add('active');
             document.getElementById('subjectSelector').classList.remove('hidden');
         }
 
@@ -689,11 +743,11 @@ The legacy of ancient Egypt continues to fascinate people today, and archaeologi
             questionsContainer.innerHTML = '';
             
             if (currentSubject === 'math') {
-                worksheetTitle.textContent = `Grade ${currentGrade} Math Practice`;
+                worksheetTitle.textContent = `Level ${currentGrade} Math Practice`;
                 currentQuestions = getRandomQuestions(mathProblems[currentGrade], 10);
                 renderMathQuestions();
             } else {
-                worksheetTitle.textContent = `Grade ${currentGrade} Reading Comprehension`;
+                worksheetTitle.textContent = `Level ${currentGrade} Reading Comprehension`;
                 const readingSet = readingContent[currentGrade][Math.floor(Math.random() * readingContent[currentGrade].length)];
                 currentQuestions = readingSet.questions;
                 renderReadingQuestions(readingSet);
@@ -716,7 +770,7 @@ The legacy of ancient Egypt continues to fascinate people today, and archaeologi
                 const questionCard = document.createElement('div');
                 questionCard.className = 'question-card';
                 questionCard.innerHTML = `
-                    <div class="question-number">Question ${index + 1}</div>
+                    <div class="question-number">Question ${index + 1} ${q.category ? `<span style="opacity: 0.7; font-size: 0.85em;">• ${q.category}</span>` : ''}</div>
                     <div class="question-text">${q.question}</div>
                     ${q.type === 'input' 
                         ? `<input type="text" class="answer-input" id="answer-${index}" 
@@ -831,7 +885,7 @@ The legacy of ancient Egypt continues to fascinate people today, and archaeologi
 
         function checkAnswer(userAnswer, correctAnswer) {
             const normalizeAnswer = (ans) => {
-                return ans.toString().toLowerCase().replace(/[^a-z0-9.]/g, '');
+                return ans.toString().toLowerCase().replace(/[^a-z0-9./]/g, '');
             };
             return normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
         }
